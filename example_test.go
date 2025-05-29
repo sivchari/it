@@ -14,9 +14,9 @@ func Example() {
 			func(v int) bool {
 				return v%2 == 0
 			}).
-		// Map(func(v int) int {
-		// 	return v * v
-		// }).
+		Map(func(v int) int {
+			return v * v
+		}).
 		Seq()
 
 	for v := range seq {
