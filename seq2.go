@@ -15,55 +15,25 @@ limitations under the License.
 */
 package it
 
-import (
-	"iter"
-	"slices"
-)
+import "iter"
 
-type Seq[V any] iter.Seq[V]
-
-func NewSeq[V any](seq iter.Seq[V]) Seq[V] {
-	return Seq[V](seq)
-}
-
-func (s Seq[V]) Seq() iter.Seq[V] {
-	return iter.Seq[V](s)
-}
-
-func (s Seq[V]) Filter(f func(V) bool) Seq[V] {
-	return func(yield func(V) bool) {
-		for v := range s.Seq() {
-			if f(v) && !yield(v) {
-				return
-			}
-		}
-	}
-}
-
-func (s Seq[V]) Map(f func(V) V) Seq[V] {
-	return func(yield func(V) bool) {
-		for v := range s.Seq() {
-			if !yield(f(v)) {
-				return
-			}
-		}
-	}
-}
-
-func (s Seq[V]) Collect() []V {
-	return slices.Collect(s.Seq())
-}
-
+// Seq2 is a wrapper around iter.Seq2 that provides additional methods
+// for some common operations like filtering, mapping, and collecting.
 type Seq2[K, V any] iter.Seq2[K, V]
 
+// NewSeq2 creates a new Seq2 from an existing iter.Seq2.
 func NewSeq2[K, V any](seq iter.Seq2[K, V]) Seq2[K, V] {
 	return Seq2[K, V](seq)
 }
 
+// Seq2 returns the underlying iter.Seq2.
 func (s Seq2[K, V]) Seq2() iter.Seq2[K, V] {
 	return iter.Seq2[K, V](s)
 }
 
+// Filter returns a new Seq2 that yields only the key-value pairs
+// for which the provided function returns true. It stops yielding
+// pairs as soon as the yield function returns false.
 func (s Seq2[K, V]) Filter(f func(K, V) bool) Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		for k, v := range s.Seq2() {
@@ -74,6 +44,9 @@ func (s Seq2[K, V]) Filter(f func(K, V) bool) Seq2[K, V] {
 	}
 }
 
+// Map returns a new Seq2 that applies the provided function to each
+// key-value pair of the original Seq2. It stops yielding pairs
+// as soon as the yield function returns false.
 func (s Seq2[K, V]) Map(f func(K, V) (K, V)) Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		for k, v := range s.Seq2() {

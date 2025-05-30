@@ -16,7 +16,6 @@ limitations under the License.
 package it_test
 
 import (
-	"maps"
 	"slices"
 	"testing"
 
@@ -48,27 +47,5 @@ func TestSeqCollect(t *testing.T) {
 	expected := []int{1, 2, 3, 4, 5}
 	if !slices.Equal(collected, expected) {
 		t.Errorf("Expected %v but got %v", expected, collected)
-	}
-}
-
-func TestSeq2Map(t *testing.T) {
-	mapped := maps.Collect(
-		it.NewSeq2(maps.All(map[string]int{"a": 1, "b": 2, "c": 3})).
-			Map(func(k string, v int) (string, int) { return k, v * 2 }).
-			Seq2())
-	expected := map[string]int{"a": 2, "b": 4, "c": 6}
-	if !maps.Equal(mapped, expected) {
-		t.Errorf("Expected %v but got %v", expected, mapped)
-	}
-}
-
-func TestSeq2Filter(t *testing.T) {
-	filtered := maps.Collect(
-		it.NewSeq2(maps.All(map[string]int{"a": 1, "b": 2, "c": 3})).
-			Filter(func(k string, v int) bool { return v%2 == 0 }).
-			Seq2())
-	expected := map[string]int{"b": 2}
-	if !maps.Equal(filtered, expected) {
-		t.Errorf("Expected %v but got %v", expected, filtered)
 	}
 }
